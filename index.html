@@ -3,67 +3,92 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Bank Soal Digital SD</title>
+  <title>Kuis Interaktif</title>
+  <script src="https://cdn.tailwindcss.com"></script>
   <style>
-    body { font-family: Arial, sans-serif; margin: 20px; }
-    h1 { color: #2c3e50; text-align: center; }
-    .menu { margin: 20px 0; text-align: center; }
-    .menu button {
-      margin: 5px;
-      padding: 10px 20px;
-      background: #3498db;
-      color: white;
-      border: none;
-      border-radius: 6px;
-      cursor: pointer;
-    }
-    .menu button:hover { background: #2980b9; }
-    .soal { display: none; background: #f9f9f9; padding: 15px; margin: 15px 0; border-radius: 8px; }
-    .jawaban { margin-top: 8px; color: green; display: none; }
+    .hidden { display: none; }
   </style>
+</head>
+<body class="bg-gray-100 min-h-screen flex flex-col items-center p-6">
+  <h1 class="text-2xl font-bold mb-6">Kuis Interaktif SD</h1>
+
+  <!-- Tombol Mapel -->
+  <div class="grid grid-cols-2 gap-4 mb-8">
+    <button onclick="showQuestions('pancasila')" class="bg-blue-500 text-white px-4 py-2 rounded-xl shadow">Pancasila</button>
+    <button onclick="showQuestions('mtk')" class="bg-green-500 text-white px-4 py-2 rounded-xl shadow">Matematika</button>
+    <button onclick="showQuestions('bindo')" class="bg-red-500 text-white px-4 py-2 rounded-xl shadow">Bahasa Indonesia</button>
+    <button onclick="showQuestions('senbud')" class="bg-purple-500 text-white px-4 py-2 rounded-xl shadow">Seni Budaya</button>
+    <button onclick="showQuestions('ipas')" class="bg-yellow-500 text-white px-4 py-2 rounded-xl shadow">IPAS</button>
+  </div>
+
+  <!-- Container Soal -->
+  <div id="questions-container" class="w-full max-w-2xl"></div>
+
   <script>
-    function showSoal(mapel) {
-      document.querySelectorAll('.soal').forEach(div => div.style.display = 'none');
-      document.getElementById(mapel).style.display = 'block';
-    }
-    function toggleJawaban(id) {
-      const jwb = document.getElementById(id);
-      jwb.style.display = (jwb.style.display === "none") ? "block" : "none";
+    const questions = {
+      pancasila: {
+        name: "Pancasila",
+        pg: [
+          "Pancasila terdiri dari berapa sila?",
+          "Sila pertama berbunyi?",
+          "Lambang sila ketiga?",
+          "Sila kedua mengajarkan tentang?",
+          "Lambang sila kelima?",
+          "Hari lahir Pancasila diperingati tanggal?",
+          "Sila keempat berbunyi?",
+          "Lambang sila keempat?",
+          "Apa arti Bhinneka Tunggal Ika?",
+          "Apa lambang negara Indonesia?"
+        ],
+        isian: [
+          "Tuliskan bunyi sila kedua!",
+          "Sebutkan lambang sila pertama!",
+          "Apa warna dasar perisai Garuda?",
+          "Siapa pencipta lambang Garuda Pancasila?",
+          "Tuliskan 3 nilai yang terkandung dalam sila ke-5!"
+        ]
+      },
+      mtk: {
+        name: "Matematika",
+        pg: Array.from({length: 10}, (_, i) => `Soal Pilihan Ganda Matematika ${i+1}`),
+        isian: Array.from({length: 5}, (_, i) => `Soal Isian Matematika ${i+1}`)
+      },
+      bindo: {
+        name: "Bahasa Indonesia",
+        pg: Array.from({length: 10}, (_, i) => `Soal Pilihan Ganda B. Indonesia ${i+1}`),
+        isian: Array.from({length: 5}, (_, i) => `Soal Isian B. Indonesia ${i+1}`)
+      },
+      senbud: {
+        name: "Seni Budaya",
+        pg: Array.from({length: 10}, (_, i) => `Soal Pilihan Ganda Seni Budaya ${i+1}`),
+        isian: Array.from({length: 5}, (_, i) => `Soal Isian Seni Budaya ${i+1}`)
+      },
+      ipas: {
+        name: "IPAS",
+        pg: Array.from({length: 10}, (_, i) => `Soal Pilihan Ganda IPAS ${i+1}`),
+        isian: Array.from({length: 5}, (_, i) => `Soal Isian IPAS ${i+1}`)
+      }
+    };
+
+    function showQuestions(subject) {
+      const container = document.getElementById('questions-container');
+      const data = questions[subject];
+      let html = `
+        <div class="bg-white p-6 rounded-xl shadow mb-6">
+          <h2 class="text-xl font-bold mb-4">${data.name}</h2>
+          <h3 class="font-semibold mb-2">Soal Pilihan Ganda</h3>
+          <ol class="list-decimal pl-6 mb-4">
+            ${data.pg.map(q => `<li>${q}</li>`).join('')}
+          </ol>
+          <h3 class="font-semibold mb-2">Soal Isian</h3>
+          <ol class="list-decimal pl-6">
+            ${data.isian.map(q => `<li>${q}</li>`).join('')}
+          </ol>
+        </div>
+      `;
+      container.innerHTML = html;
+      window.scrollTo({ top: container.offsetTop, behavior: 'smooth' });
     }
   </script>
-</head>
-<body>
-  <h1>📘 Bank Soal Digital SD</h1>
-  <p style="text-align:center;">Klik mata pelajaran untuk melihat soal.</p>
-
-  <div class="menu">
-    <button onclick="showSoal('mtk')">Matematika</button>
-    <button onclick="showSoal('bindo')">Bahasa Indonesia</button>
-    <button onclick="showSoal('ipa')">IPA</button>
-  </div>
-
-  <!-- Soal Matematika -->
-  <div class="soal" id="mtk">
-    <h2>Matematika</h2>
-    <p>1. Sebuah kebun berbentuk persegi panjang panjangnya 20 m dan lebarnya 15 m. Berapa luasnya?</p>
-    <button onclick="toggleJawaban('j1')">Lihat Jawaban</button>
-    <div class="jawaban" id="j1"><b>300 m²</b></div>
-  </div>
-
-  <!-- Soal Bahasa Indonesia -->
-  <div class="soal" id="bindo">
-    <h2>Bahasa Indonesia</h2>
-    <p>1. Bacalah kalimat berikut: "Andi pergi ke pasar membeli buah." Kata kerja dalam kalimat tersebut adalah...</p>
-    <button onclick="toggleJawaban('j2')">Lihat Jawaban</button>
-    <div class="jawaban" id="j2"><b>pergi, membeli</b></div>
-  </div>
-
-  <!-- Soal IPA -->
-  <div class="soal" id="ipa">
-    <h2>IPA</h2>
-    <p>1. Benda padat jika dipanaskan akan...?</p>
-    <button onclick="toggleJawaban('j3')">Lihat Jawaban</button>
-    <div class="jawaban" id="j3"><b>Memuai</b></div>
-  </div>
 </body>
 </html>
