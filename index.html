@@ -5,51 +5,65 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Bank Soal Digital SD</title>
   <style>
-    body { font-family: Arial, sans-serif; margin: 20px; line-height: 1.6; }
-    h1, h2 { color: #2c3e50; }
-    .soal { background: #f9f9f9; padding: 15px; margin: 10px 0; border-radius: 8px; }
-    .jawaban { margin-left: 20px; color: green; display: none; }
-    button { margin-top: 10px; padding: 5px 10px; border: none; background: #3498db; color: white; border-radius: 5px; cursor: pointer; }
-    button:hover { background: #2980b9; }
+    body { font-family: Arial, sans-serif; margin: 20px; }
+    h1 { color: #2c3e50; text-align: center; }
+    .menu { margin: 20px 0; text-align: center; }
+    .menu button {
+      margin: 5px;
+      padding: 10px 20px;
+      background: #3498db;
+      color: white;
+      border: none;
+      border-radius: 6px;
+      cursor: pointer;
+    }
+    .menu button:hover { background: #2980b9; }
+    .soal { display: none; background: #f9f9f9; padding: 15px; margin: 15px 0; border-radius: 8px; }
+    .jawaban { margin-top: 8px; color: green; display: none; }
   </style>
   <script>
+    function showSoal(mapel) {
+      document.querySelectorAll('.soal').forEach(div => div.style.display = 'none');
+      document.getElementById(mapel).style.display = 'block';
+    }
     function toggleJawaban(id) {
-      const jawaban = document.getElementById(id);
-      jawaban.style.display = (jawaban.style.display === "none") ? "block" : "none";
+      const jwb = document.getElementById(id);
+      jwb.style.display = (jwb.style.display === "none") ? "block" : "none";
     }
   </script>
 </head>
 <body>
   <h1>📘 Bank Soal Digital SD</h1>
-  <p>Kumpulan soal latihan untuk siswa SD Kelas 5.</p>
+  <p style="text-align:center;">Klik mata pelajaran untuk melihat soal.</p>
 
-  <h2>Matematika</h2>
+  <div class="menu">
+    <button onclick="showSoal('mtk')">Matematika</button>
+    <button onclick="showSoal('bindo')">Bahasa Indonesia</button>
+    <button onclick="showSoal('ipa')">IPA</button>
+  </div>
 
-  <div class="soal">
-    <p>1. Sebuah kebun berbentuk persegi panjang dengan panjang 20 m dan lebar 15 m. Hitung luas kebun tersebut!</p>
+  <!-- Soal Matematika -->
+  <div class="soal" id="mtk">
+    <h2>Matematika</h2>
+    <p>1. Sebuah kebun berbentuk persegi panjang panjangnya 20 m dan lebarnya 15 m. Berapa luasnya?</p>
     <button onclick="toggleJawaban('j1')">Lihat Jawaban</button>
-    <div class="jawaban" id="j1">
-      <p>Luas = Panjang × Lebar = 20 × 15 = <b>300 m²</b></p>
-    </div>
+    <div class="jawaban" id="j1"><b>300 m²</b></div>
   </div>
 
-  <div class="soal">
-    <p>2. Sebuah segitiga memiliki alas 12 cm dan tinggi 10 cm. Berapa luas segitiga tersebut?</p>
+  <!-- Soal Bahasa Indonesia -->
+  <div class="soal" id="bindo">
+    <h2>Bahasa Indonesia</h2>
+    <p>1. Bacalah kalimat berikut: "Andi pergi ke pasar membeli buah." Kata kerja dalam kalimat tersebut adalah...</p>
     <button onclick="toggleJawaban('j2')">Lihat Jawaban</button>
-    <div class="jawaban" id="j2">
-      <p>Luas = ½ × alas × tinggi = ½ × 12 × 10 = <b>60 cm²</b></p>
-    </div>
+    <div class="jawaban" id="j2"><b>pergi, membeli</b></div>
   </div>
 
-  <h2>Bahasa Indonesia</h2>
-  <div class="soal">
-    <p>3. Bacalah kalimat berikut: "Andi pergi ke pasar untuk membeli buah."  
-    Kata kerja dalam kalimat tersebut adalah ...</p>
+  <!-- Soal IPA -->
+  <div class="soal" id="ipa">
+    <h2>IPA</h2>
+    <p>1. Benda padat jika dipanaskan akan...?</p>
     <button onclick="toggleJawaban('j3')">Lihat Jawaban</button>
-    <div class="jawaban" id="j3">
-      <p>Kata kerja: <b>pergi, membeli</b></p>
-    </div>
+    <div class="jawaban" id="j3"><b>Memuai</b></div>
   </div>
-
 </body>
 </html>
