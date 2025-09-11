@@ -1,171 +1,283 @@
+
 <!DOCTYPE html>
 <html lang="id">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Kuis Interaktif SD</title>
-  <script src="https://cdn.tailwindcss.com"></script>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Kuis Ceria Anak SD</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700&display=swap" rel="stylesheet">
+    <style>
+        body {
+            font-family: 'Poppins', sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        }
+        .card {
+            animation: fadeIn 0.5s ease-in-out;
+        }
+        @keyframes fadeIn {
+            from { opacity: 0; transform: scale(0.9); }
+            to { opacity: 1; transform: scale(1); }
+        }
+        .btn-mapel {
+            transition: all 0.3s ease;
+        }
+        .btn-mapel:hover {
+            transform: translateY(-5px) scale(1.05);
+            box-shadow: 0 10px 20px rgba(0,0,0,0.2);
+        }
+        .option:hover {
+            background-color: #f0f0f0;
+        }
+        .option.selected {
+            background-color: #a78bfa;
+            color: white;
+            border-color: #8b5cf6;
+        }
+        #result-container h2 {
+            animation: popIn 0.5s cubic-bezier(0.68, -0.55, 0.27, 1.55);
+        }
+        @keyframes popIn {
+            0% { transform: scale(0); }
+            100% { transform: scale(1); }
+        }
+    </style>
 </head>
-<body class="bg-gray-100 min-h-screen flex flex-col items-center p-6">
-  <h1 class="text-2xl font-bold mb-6">Kuis Interaktif SD</h1>
+<body class="min-h-screen flex flex-col items-center justify-center p-4 text-gray-800">
 
-  <!-- Menu Mapel -->
-  <div id="menu" class="grid grid-cols-2 gap-4 mb-8">
-    <button onclick="startQuiz('pancasila')" class="bg-blue-500 text-white px-4 py-2 rounded-xl shadow">Pancasila</button>
-    <button onclick="startQuiz('mtk')" class="bg-green-500 text-white px-4 py-2 rounded-xl shadow">Matematika</button>
-    <button onclick="startQuiz('bindo')" class="bg-red-500 text-white px-4 py-2 rounded-xl shadow">Bahasa Indonesia</button>
-    <button onclick="startQuiz('senbud')" class="bg-purple-500 text-white px-4 py-2 rounded-xl shadow">Seni Budaya</button>
-    <button onclick="startQuiz('ipas')" class="bg-yellow-500 text-white px-4 py-2 rounded-xl shadow">IPAS</button>
-  </div>
+    <div id="main-container" class="w-full max-w-4xl mx-auto card">
+        <!-- Judul Utama -->
+        <div id="title-header" class="text-center mb-8">
+            <h1 class="text-4xl md:text-5xl font-bold text-white shadow-lg">Kuis Ceria Anak SD</h1>
+            <p class="text-white text-lg mt-2">Pilih mata pelajaran untuk mulai bermain!</p>
+        </div>
 
-  <!-- Container Soal -->
-  <div id="quiz-container" class="w-full max-w-2xl hidden"></div>
+        <!-- Menu Mapel -->
+        <div id="menu" class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-4 md:gap-6">
+            <button onclick="startQuiz('pancasila')" class="btn-mapel bg-red-500 text-white p-4 rounded-xl shadow-lg font-semibold text-lg">Pancasila</button>
+            <button onclick="startQuiz('mtk')" class="btn-mapel bg-blue-500 text-white p-4 rounded-xl shadow-lg font-semibold text-lg">Matematika</button>
+            <button onclick="startQuiz('bindo')" class="btn-mapel bg-green-500 text-white p-4 rounded-xl shadow-lg font-semibold text-lg">B. Indonesia</button>
+            <button onclick="startQuiz('senbud')" class="btn-mapel bg-purple-500 text-white p-4 rounded-xl shadow-lg font-semibold text-lg">Seni Budaya</button>
+            <button onclick="startQuiz('ipas')" class="btn-mapel bg-yellow-500 text-white p-4 rounded-xl shadow-lg font-semibold text-lg">IPAS</button>
+        </div>
 
-  <!-- Navigasi -->
-  <div id="navigation" class="hidden flex justify-between w-full max-w-2xl mt-4">
-    <button onclick="prevQuestion()" class="bg-gray-300 px-4 py-2 rounded-xl shadow">⬅️ Previous</button>
-    <button onclick="goHome()" class="bg-blue-500 text-white px-4 py-2 rounded-xl shadow">🏠 Home</button>
-    <button onclick="nextQuestion()" class="bg-gray-300 px-4 py-2 rounded-xl shadow">Next ➡️</button>
-  </div>
+        <!-- Container Soal -->
+        <div id="quiz-container" class="w-full max-w-2xl mx-auto hidden"></div>
 
-  <script>
-    const questions = {
-      pancasila: [
-        { type: "pg", q: "Pancasila terdiri dari berapa sila?", options: ["3", "4", "5", "6"] },
-        { type: "pg", q: "Lambang sila pertama adalah ...", options: ["Bintang", "Padi dan kapas", "Rantai", "Banteng"] },
-        { type: "pg", q: "Sila ketiga berbunyi ...", options: ["Persatuan Indonesia", "Kemanusiaan yang adil dan beradab", "Keadilan sosial", "Ketuhanan Yang Maha Esa"] },
-        { type: "pg", q: "Bunyi sila kedua adalah ...", options: ["Kemanusiaan yang adil dan beradab", "Persatuan Indonesia", "Kerakyatan yang dipimpin oleh hikmat kebijaksanaan", "Keadilan sosial"] },
-        { type: "pg", q: "Simbol sila keempat adalah ...", options: ["Kepala banteng", "Padi kapas", "Bintang", "Rantai"] },
-        { type: "pg", q: "Makna dari sila pertama adalah ...", options: ["Menghormati agama lain", "Bekerja sama", "Gotong royong", "Persatuan bangsa"] },
-        { type: "pg", q: "Urutan sila kedua setelah sila ...", options: ["Pertama", "Ketiga", "Keempat", "Kelima"] },
-        { type: "pg", q: "Simbol padi dan kapas bermakna ...", options: ["Kemakmuran", "Kebijaksanaan", "Kemanusiaan", "Ketuhanan"] },
-        { type: "pg", q: "Kerakyatan yang dipimpin oleh hikmat kebijaksanaan ada pada sila ...", options: ["Keempat", "Kedua", "Ketiga", "Kelima"] },
-        { type: "pg", q: "Pancasila dijadikan dasar negara pada tanggal ...", options: ["1 Juni 1945", "17 Agustus 1945", "20 Mei 1908", "28 Oktober 1928"] },
-        { type: "isian", q: "Tuliskan bunyi sila kelima Pancasila!" },
-        { type: "isian", q: "Apa arti lambang bintang pada Pancasila?" },
-        { type: "isian", q: "Sebutkan contoh pengamalan sila kedua di sekolah!" },
-        { type: "isian", q: "Tuliskan urutan sila ketiga!" },
-        { type: "isian", q: "Apa makna kepala banteng pada Pancasila?" }
-      ],
-      mtk: [
-        { type: "pg", q: "Luas persegi dengan sisi 12 cm adalah ...", options: ["124", "144", "156", "120"] },
-        { type: "pg", q: "Hasil dari 3/4 + 2/4 adalah ...", options: ["1/2", "1", "2", "5/4"] },
-        { type: "pg", q: "Keliling lingkaran dengan jari-jari 7 cm (π=22/7) adalah ...", options: ["44 cm", "22 cm", "14 cm", "154 cm"] },
-        { type: "pg", q: "Hasil dari 35 × 12 adalah ...", options: ["420", "425", "440", "455"] },
-        { type: "pg", q: "Sebuah segitiga alas 10 cm dan tinggi 8 cm. Luasnya ...", options: ["40", "80", "50", "30"] },
-        { type: "pg", q: "Angka Romawi dari 49 adalah ...", options: ["XLVIIII", "XLIX", "IL", "XLVIV"] },
-        { type: "pg", q: "Hasil dari 125 : 25 adalah ...", options: ["3", "4", "5", "6"] },
-        { type: "pg", q: "Nilai tempat angka 7 pada bilangan 3.745 adalah ...", options: ["7", "70", "700", "7000"] },
-        { type: "pg", q: "Hasil dari 15% dari 200 adalah ...", options: ["25", "30", "35", "40"] },
-        { type: "pg", q: "Volume kubus dengan sisi 5 cm adalah ...", options: ["25", "125", "150", "625"] },
-        { type: "isian", q: "Tuliskan rumus luas persegi panjang!" },
-        { type: "isian", q: "Hasil dari 456 + 789 adalah ..." },
-        { type: "isian", q: "Jika 1 jam = 60 menit, maka 3 jam = ... menit." },
-        { type: "isian", q: "Sebutkan bilangan prima antara 10 dan 20!" },
-        { type: "isian", q: "Sebuah persegi panjang panjang 15 cm dan lebar 10 cm. Hitung luasnya!" }
-      ],
-      bindo: [
-        { type: "pg", q: "Sinonim dari kata 'besar' adalah ...", options: ["Kecil", "Agung", "Pendek", "Tipis"] },
-        { type: "pg", q: "Antonim kata 'tinggi' adalah ...", options: ["Rendah", "Panjang", "Dalam", "Jauh"] },
-        { type: "pg", q: "Kata tanya untuk menanyakan tempat adalah ...", options: ["Siapa", "Di mana", "Apa", "Mengapa"] },
-        { type: "pg", q: "Kalimat yang benar adalah ...", options: ["Saya pergi ke sekolah.", "saya pergi ke sekolah", "saya Pergi ke sekolah", "Saya Pergi Ke Sekolah."] },
-        { type: "pg", q: "Cerita rakyat biasanya bersifat ...", options: ["Nyata", "Fiksi", "Ilmiah", "Teknis"] },
-        { type: "pg", q: "Huruf kapital digunakan di ...", options: ["Awal kalimat", "Akhir kalimat", "Setelah koma", "Setelah titik"] },
-        { type: "pg", q: "Kata 'berlari' terdiri dari ...", options: ["Imbuhan ber- dan kata dasar lari", "Kata lari saja", "Awalan lari", "Akhiran -lari"] },
-        { type: "pg", q: "Pantun biasanya terdiri dari ...", options: ["2 baris", "3 baris", "4 baris", "5 baris"] },
-        { type: "pg", q: "Tokoh utama dalam cerita disebut ...", options: ["Protagonis", "Antagonis", "Narator", "Pengarang"] },
-        { type: "pg", q: "Kalimat perintah ditandai dengan tanda ...", options: ["Tanya", "Seru", "Titik", "Koma"] },
-        { type: "isian", q: "Tuliskan 3 kata kerja!" },
-        { type: "isian", q: "Buatlah kalimat dengan kata 'sekolah'!" },
-        { type: "isian", q: "Apa arti kata 'adil'?" },
-        { type: "isian", q: "Tuliskan 2 contoh kata sifat!" },
-        { type: "isian", q: "Sebutkan struktur teks narasi!" }
-      ],
-      senbud: [
-        { type: "pg", q: "Warna primer terdiri dari ...", options: ["Merah, kuning, biru", "Merah, hijau, biru", "Hitam, putih, abu", "Merah, biru, hijau"] },
-        { type: "pg", q: "Alat musik angklung berasal dari daerah ...", options: ["Jawa", "Bali", "Sunda", "Betawi"] },
-        { type: "pg", q: "Pakaian adat Bali disebut ...", options: ["Ulos", "Kebaya", "Kain Poleng", "Beskap"] },
-        { type: "pg", q: "Batik termasuk karya seni ...", options: ["Musik", "Tari", "Rupa", "Drama"] },
-        { type: "pg", q: "Tari Saman berasal dari ...", options: ["Aceh", "Sumatera Barat", "Bali", "Jawa"] },
-        { type: "pg", q: "Alat musik gitar dimainkan dengan cara ...", options: ["Dipetik", "Ditiup", "Dipukul", "Digoyang"] },
-        { type: "pg", q: "Gamelan merupakan alat musik dari daerah ...", options: ["Jawa", "Bali", "Papua", "Sulawesi"] },
-        { type: "pg", q: "Patung adalah karya seni ...", options: ["2 dimensi", "3 dimensi", "Suara", "Gerak"] },
-        { type: "pg", q: "Seni drama termasuk seni ...", options: ["Pertunjukan", "Rupa", "Murni", "Musik"] },
-        { type: "pg", q: "Kain songket berasal dari ...", options: ["Sumatera", "Jawa", "Kalimantan", "Bali"] },
-        { type: "isian", q: "Sebutkan 3 contoh warna sekunder!" },
-        { type: "isian", q: "Apa fungsi alat musik kendang?" },
-        { type: "isian", q: "Tuliskan nama 2 tari tradisional Indonesia!" },
-        { type: "isian", q: "Apa yang dimaksud dengan seni rupa 3 dimensi?" },
-        { type: "isian", q: "Sebutkan 2 contoh seni pertunjukan!" }
-      ],
-      ipas: [
-        { type: "pg", q: "Air jika dipanaskan akan berubah menjadi ...", options: ["Uap", "Es", "Padat", "Tanah"] },
-        { type: "pg", q: "Bagian tumbuhan yang berfungsi menyerap air adalah ...", options: ["Akar", "Batang", "Daun", "Bunga"] },
-        { type: "pg", q: "Planet ketiga dari matahari adalah ...", options: ["Merkurius", "Venus", "Bumi", "Mars"] },
-        { type: "pg", q: "Gaya tarik bumi disebut ...", options: ["Gravitasi", "Gesekan", "Dorongan", "Magnet"] },
-        { type: "pg", q: "Alat untuk mengukur suhu adalah ...", options: ["Termometer", "Barometer", "Anemometer", "Voltmeter"] },
-        { type: "pg", q: "Sumber energi utama di bumi adalah ...", options: ["Matahari", "Air", "Minyak", "Angin"] },
-        { type: "pg", q: "Hewan pemakan tumbuhan disebut ...", options: ["Herbivora", "Karnivora", "Omnivora", "Insektivora"] },
-        { type: "pg", q: "Benda cair memiliki bentuk ...", options: ["Mengikuti wadahnya", "Tetap", "Bulatan", "Kotak"] },
-        { type: "pg", q: "Gas yang dibutuhkan manusia untuk bernapas adalah ...", options: ["Oksigen", "Karbon dioksida", "Nitrogen", "Hidrogen"] },
-        { type: "pg", q: "Hewan yang berkembang biak dengan cara bertelur disebut ...", options: ["Ovipar", "Vivipar", "Ovovivipar", "Mamalia"] },
-        { type: "isian", q: "Sebutkan 3 contoh energi alternatif!" },
-        { type: "isian", q: "Apa fungsi daun pada tumbuhan?" },
-        { type: "isian", q: "Sebutkan planet-planet dalam tata surya secara urut!" },
-        { type: "isian", q: "Apa yang dimaksud dengan daur air?" },
-        { type: "isian", q: "Tuliskan 2 contoh perubahan wujud benda!" }
-      ]
-    };
+        <!-- Navigasi -->
+        <div id="navigation" class="hidden flex justify-between w-full max-w-2xl mx-auto mt-6">
+            <button id="prev-btn" onclick="prevQuestion()" class="bg-white hover:bg-gray-200 text-gray-800 font-bold py-2 px-4 rounded-lg shadow-md transition-transform transform hover:scale-105">⬅️ Sebelumnya</button>
+            <button onclick="goHome()" class="bg-indigo-500 hover:bg-indigo-600 text-white font-bold py-2 px-4 rounded-lg shadow-md transition-transform transform hover:scale-105">🏠 Menu Utama</button>
+            <button id="next-btn" onclick="nextQuestion()" class="bg-white hover:bg-gray-200 text-gray-800 font-bold py-2 px-4 rounded-lg shadow-md transition-transform transform hover:scale-105">Selanjutnya ➡️</button>
+        </div>
 
-    let currentMapel = "";
-    let currentIndex = 0;
+        <!-- Hasil Kuis -->
+        <div id="result-container" class="hidden bg-white p-8 rounded-xl shadow-2xl text-center w-full max-w-md mx-auto">
+            <h2 id="result-title" class="text-3xl font-bold mb-2">Hasil Kuis</h2>
+            <p id="result-score" class="text-5xl font-bold text-indigo-500 my-4">100</p>
+            <p id="result-details" class="text-lg mb-6">Kamu menjawab 10 dari 10 soal dengan benar!</p>
+            <div class="flex justify-center gap-4">
+                <button onclick="retryQuiz()" class="bg-yellow-500 hover:bg-yellow-600 text-white font-bold py-2 px-6 rounded-lg shadow-md transition-transform transform hover:scale-105">Coba Lagi</button>
+                <button onclick="goHome()" class="bg-indigo-500 hover:bg-indigo-600 text-white font-bold py-2 px-6 rounded-lg shadow-md transition-transform transform hover:scale-105">Menu Utama</button>
+            </div>
+        </div>
+    </div>
 
-    function startQuiz(mapel) {
-      currentMapel = mapel;
-      currentIndex = 0;
-      document.getElementById("menu").classList.add("hidden");
-      document.getElementById("quiz-container").classList.remove("hidden");
-      document.getElementById("navigation").classList.remove("hidden");
-      showQuestion();
-    }
 
-    function showQuestion() {
-      const container = document.getElementById("quiz-container");
-      const soal = questions[currentMapel][currentIndex];
-      if (!soal) return;
+    <script>
+        const questions = {
+            pancasila: [
+                { type: "pg", image: "https://cdn.shopify.com/s/files/1/0428/0965/5452/files/620b33b5c5637.jpg?v=1662911369", q: "Gambar di atas adalah lambang sila ke...", options: ["Pertama", "Kedua", "Ketiga", "Keempat"], answer: "Pertama" },
+                { type: "pg", image: "https://lh3.googleusercontent.com/d/1gdTZ6D7A-GWD1Y2hkE8EGCS0hNJSj-wo", q: "Aku adalah guru di...", options: ["SDN Lubang Buaya 01", "SDN Cipayung 06", "SDN Cipayung 02", "SDN Cipayung 01"], answer: "SDN Cipayung 04" },
+                { type: "pg", q: "Bunyi sila kedua adalah...", options: ["Kemanusiaan yang adil dan beradab", "Persatuan Indonesia", "Kerakyatan yang dipimpin oleh hikmat kebijaksanaan", "Keadilan sosial"], answer: "Kemanusiaan yang adil dan beradab" },
+                { type: "pg", q: "Simbol sila keempat adalah...", options: ["Kepala banteng", "Padi kapas", "Bintang", "Rantai"], answer: "Kepala banteng" },
+                { type: "isian", q: "Tuliskan bunyi sila kelima Pancasila!", answer: "Keadilan sosial bagi seluruh rakyat Indonesia" }
+            ],
+            mtk: [
+                { type: "pg", image: "https://placehold.co/400x200/2196F3/FFFFFF?text=Persegi+12cm", q: "Berapa luas persegi dengan sisi 12 cm pada gambar?", options: ["124 cm²", "144 cm²", "156 cm²", "120 cm²"], answer: "144 cm²" },
+                { type: "pg", q: "Hasil dari 3/4 + 2/4 adalah...", options: ["1/2", "1", "2", "5/4"], answer: "5/4" },
+                { type: "pg", q: "Keliling lingkaran dengan jari-jari 7 cm (π=22/7) adalah...", options: ["44 cm", "22 cm", "14 cm", "154 cm"], answer: "44 cm" },
+                { type: "pg", q: "Hasil dari 35 × 12 adalah...", options: ["420", "425", "440", "455"], answer: "420" },
+                { type: "isian", q: "Sebuah persegi panjang memiliki panjang 15 cm dan lebar 10 cm. Berapa luasnya?", answer: "150" }
+            ],
+            bindo: [
+                { type: "pg", q: "Sinonim dari kata 'besar' adalah...", options: ["Kecil", "Agung", "Pendek", "Tipis"], answer: "Agung" },
+                { type: "pg", q: "Antonim kata 'tinggi' adalah...", options: ["Rendah", "Panjang", "Dalam", "Jauh"], answer: "Rendah" },
+                { type: "pg", q: "Kata tanya untuk menanyakan tempat adalah...", options: ["Siapa", "Di mana", "Apa", "Mengapa"], answer: "Di mana" },
+                { type: "pg", q: "Cerita rakyat biasanya bersifat...", options: ["Nyata", "Fiksi", "Ilmiah", "Teknis"], answer: "Fiksi" },
+                { type: "isian", q: "Buatlah kalimat dengan kata 'sekolah'!", answer: "sekolah" }
+            ],
+            senbud: [
+                { type: "pg", image: "https://edoo.id/wp-content/uploads/2023/07/Fakta-Menarik-Angklung-2.png", q: "Alat musik pada gambar berasal dari daerah...", options: ["Jawa", "Bali", "Sunda", "Betawi"], answer: "Sunda" },
+                { type: "pg", q: "Warna primer terdiri dari...", options: ["Merah, kuning, biru", "Merah, hijau, biru", "Hitam, putih, abu", "Merah, biru, hijau"], answer: "Merah, kuning, biru" },
+                { type: "pg", q: "Batik termasuk karya seni...", options: ["Musik", "Tari", "Rupa", "Drama"], answer: "Rupa" },
+                { type: "pg", q: "Tari Saman berasal dari...", options: ["Aceh", "Sumatera Barat", "Bali", "Jawa"], answer: "Aceh" },
+                { type: "isian", q: "Sebutkan 3 contoh warna sekunder!", answer: "hijau, oranye, ungu" }
+            ],
+            ipas: [
+                { type: "pg", image: "https://placehold.co/400x200/FFC107/FFFFFF?text=Akar+Tumbuhan", q: "Bagian tumbuhan pada gambar berfungsi untuk...", options: ["Menyerap air", "Fotosintesis", "Berkembang biak", "Bernapas"], answer: "Menyerap air" },
+                { type: "pg", q: "Air jika dipanaskan akan berubah menjadi...", options: ["Uap", "Es", "Padat", "Tanah"], answer: "Uap" },
+                { type: "pg", q: "Planet ketiga dari matahari adalah...", options: ["Merkurius", "Venus", "Bumi", "Mars"], answer: "Bumi" },
+                { type: "pg", q: "Gaya tarik bumi disebut...", options: ["Gravitasi", "Gesekan", "Dorongan", "Magnet"], answer: "Gravitasi" },
+                { type: "isian", q: "Sebutkan planet-planet dalam tata surya secara urut!", answer: "merkurius, venus, bumi, mars, jupiter, saturnus, uranus, neptunus" }
+            ]
+        };
 
-      let html = `<div class="bg-white p-6 rounded-xl shadow text-lg">
-        <p class="mb-4 font-semibold">Soal ${currentIndex+1}: ${soal.q}</p>`;
-      if (soal.type === "pg") {
-        soal.options.forEach(opt => {
-          html += `<p><input type="radio" name="q${currentIndex}"> ${opt}</p>`;
-        });
-      } else {
-        html += `<textarea class="w-full border rounded p-2" rows="3" placeholder="Tulis jawabanmu di sini..."></textarea>`;
-      }
-      html += `</div>`;
-      container.innerHTML = html;
-    }
+        let currentMapel = "";
+        let currentIndex = 0;
+        let userAnswers = [];
 
-    function nextQuestion() {
-      if (currentIndex < questions[currentMapel].length - 1) {
-        currentIndex++;
-        showQuestion();
-      }
-    }
+        const menuEl = document.getElementById("menu");
+        const titleHeaderEl = document.getElementById("title-header");
+        const quizContainerEl = document.getElementById("quiz-container");
+        const navigationEl = document.getElementById("navigation");
+        const resultContainerEl = document.getElementById("result-container");
+        const nextBtn = document.getElementById("next-btn");
+        const prevBtn = document.getElementById("prev-btn");
 
-    function prevQuestion() {
-      if (currentIndex > 0) {
-        currentIndex--;
-        showQuestion();
-      }
-    }
+        function startQuiz(mapel) {
+            currentMapel = mapel;
+            currentIndex = 0;
+            userAnswers = new Array(questions[currentMapel].length).fill(null);
+            
+            menuEl.classList.add("hidden");
+            titleHeaderEl.classList.add("hidden");
+            
+            quizContainerEl.classList.remove("hidden");
+            navigationEl.classList.remove("hidden");
+            resultContainerEl.classList.add("hidden");
+            
+            quizContainerEl.innerHTML = '';
+            quizContainerEl.classList.add('card');
+            setTimeout(() => {
+                showQuestion();
+                quizContainerEl.classList.remove('card');
+            }, 10);
+        }
 
-    function goHome() {
-      document.getElementById("menu").classList.remove("hidden");
-      document.getElementById("quiz-container").classList.add("hidden");
-      document.getElementById("navigation").classList.add("hidden");
-    }
-  </script>
+        function showQuestion() {
+            const soal = questions[currentMapel][currentIndex];
+            if (!soal) return;
+
+            let html = `<div class="bg-white p-6 rounded-xl shadow-xl text-lg">
+                <p class="text-gray-600 mb-2">Soal ${currentIndex + 1} dari ${questions[currentMapel].length}</p>
+                ${soal.image ? `<img src="${soal.image}" alt="Soal Gambar" class="w-full h-auto rounded-lg mb-4 border">` : ''}
+                <p class="mb-4 font-semibold text-xl">${soal.q}</p>`;
+
+            if (soal.type === "pg") {
+                html += '<div class="space-y-3">';
+                soal.options.forEach((opt, index) => {
+                    const isSelected = userAnswers[currentIndex] === opt;
+                    html += `<div onclick="selectOption(this, '${opt}')" class="option ${isSelected ? 'selected' : ''} border-2 rounded-lg p-3 cursor-pointer transition-all">${opt}</div>`;
+                });
+                html += '</div>';
+            } else {
+                const userAnswer = userAnswers[currentIndex] || '';
+                html += `<textarea oninput="saveTextAnswer(this.value)" class="w-full border-2 rounded-lg p-2 transition-all focus:border-indigo-500 focus:ring-2 focus:ring-indigo-200" rows="4" placeholder="Tulis jawabanmu di sini...">${userAnswer}</textarea>`;
+            }
+            html += `</div>`;
+            quizContainerEl.innerHTML = html;
+            updateNavButtons();
+        }
+
+        function selectOption(el, option) {
+            document.querySelectorAll('.option').forEach(opt => opt.classList.remove('selected'));
+            el.classList.add('selected');
+            userAnswers[currentIndex] = option;
+        }
+        
+        function saveTextAnswer(value) {
+            userAnswers[currentIndex] = value;
+        }
+
+        function updateNavButtons() {
+            prevBtn.style.visibility = currentIndex === 0 ? 'hidden' : 'visible';
+            if (currentIndex === questions[currentMapel].length - 1) {
+                nextBtn.textContent = 'Selesai 🎉';
+            } else {
+                nextBtn.textContent = 'Selanjutnya ➡️';
+            }
+        }
+        
+        function nextQuestion() {
+            if (currentIndex < questions[currentMapel].length - 1) {
+                currentIndex++;
+                quizContainerEl.classList.add('card');
+                setTimeout(() => {
+                    showQuestion();
+                    quizContainerEl.classList.remove('card');
+                }, 10);
+            } else {
+                showResult();
+            }
+        }
+
+        function prevQuestion() {
+            if (currentIndex > 0) {
+                currentIndex--;
+                quizContainerEl.classList.add('card');
+                setTimeout(() => {
+                    showQuestion();
+                    quizContainerEl.classList.remove('card');
+                }, 10);
+            }
+        }
+
+        function showResult() {
+            let score = 0;
+            questions[currentMapel].forEach((soal, index) => {
+                const userAnswer = userAnswers[index] ? userAnswers[index].toLowerCase().trim() : '';
+                const correctAnswer = soal.answer.toLowerCase().trim();
+                
+                if(soal.type === 'pg') {
+                    if (userAnswer === correctAnswer) {
+                        score++;
+                    }
+                } else { // type isian
+                    if (userAnswer.includes(correctAnswer)) {
+                        score++;
+                    }
+                }
+            });
+
+            const totalQuestions = questions[currentMapel].length;
+            const finalScore = Math.round((score / totalQuestions) * 100);
+
+            document.getElementById('result-score').textContent = finalScore;
+            document.getElementById('result-details').textContent = `Kamu menjawab ${score} dari ${totalQuestions} soal dengan benar!`;
+            
+            let resultTitle = "Kerja Bagus!";
+            if (finalScore < 50) resultTitle = "Coba Lagi ya!";
+            else if (finalScore >= 90) resultTitle = "Luar Biasa!";
+            document.getElementById('result-title').textContent = resultTitle;
+
+            quizContainerEl.classList.add("hidden");
+            navigationEl.classList.add("hidden");
+            resultContainerEl.classList.remove("hidden");
+            resultContainerEl.classList.add('card');
+        }
+
+        function retryQuiz() {
+            resultContainerEl.classList.add('hidden');
+            startQuiz(currentMapel);
+        }
+
+        function goHome() {
+            menuEl.classList.remove("hidden");
+            titleHeaderEl.classList.remove("hidden");
+            quizContainerEl.classList.add("hidden");
+            navigationEl.classList.add("hidden");
+            resultContainerEl.classList.add("hidden");
+            
+            menuEl.classList.add('card');
+            titleHeaderEl.classList.add('card');
+             setTimeout(() => {
+                menuEl.classList.remove('card');
+                titleHeaderEl.classList.remove('card');
+            }, 10);
+        }
+    </script>
 </body>
 </html>
